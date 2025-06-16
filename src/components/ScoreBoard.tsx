@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useScoreBoard } from "../hooks/useScoreBoard";
 
 export const ScoreBoard = () => {
-  const { games, startGame } = useScoreBoard();
+  const { games, startGame, updateScore, finishGame } = useScoreBoard();
   const [home, setHome] = useState("");
   const [away, setAway] = useState("");
   const [homeScore, setHomeScore] = useState(0);
@@ -35,6 +35,9 @@ export const ScoreBoard = () => {
     }
   };
 
+  const handleUpdateScore = () => updateScore(home, away, homeScore, awayScore)
+  const handleOnFinish = () => finishGame(home, away)
+
   return (
     <div>
       <h1>⚽ Football ScoreBoard</h1>
@@ -56,7 +59,7 @@ export const ScoreBoard = () => {
         />
         <div>
           <button onClick={handleOnStart}>Start Game</button>
-          <button>Finish Game</button>
+          <button onClick={handleOnFinish}>Finish Game</button>
         </div>
       </div>
       <div>
@@ -86,7 +89,7 @@ export const ScoreBoard = () => {
               value={awayScore}
               onChange={(e) => setAwayScore(+e.target.value)}
             />
-            <button>Update</button>
+            <button onClick={handleUpdateScore}>Update</button>
           </div>
         )}
       </div>

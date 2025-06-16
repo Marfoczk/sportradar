@@ -1,13 +1,18 @@
 import { useReducer } from "react";
 import type { ScoreBoardState } from "../types/types";
 
-type Action = { type: "START_GAME"; homeTeam: string; awayTeam: string };
+type Action =
+  | { type: 'START_GAME'; homeTeam: string; awayTeam: string }
+  | { type: 'FINISH_GAME'; homeTeam: string; awayTeam: string }
+  | { type: 'UPDATE_SCORE'; homeTeam: string; awayTeam: string; homeScore: number; awayScore: number };
+
 
 function reducer(state: ScoreBoardState, action: Action): ScoreBoardState {
   switch (action.type) {
     case "START_GAME": {
       const exists = state.some(
-        (game) => game.homeTeam === action.homeTeam && game.awayTeam === action.awayTeam
+        (game) =>
+          game.homeTeam === action.homeTeam && game.awayTeam === action.awayTeam
       );
       if (exists) throw new Error("Game already exists");
       return [
@@ -21,6 +26,18 @@ function reducer(state: ScoreBoardState, action: Action): ScoreBoardState {
         },
       ];
     }
+    case "FINISH_GAME":
+      return state.filter(
+        (game) =>
+          !(game.homeTeam === action.homeTeam && game.awayTeam === action.awayTeam)
+      );
+
+    case "UPDATE_SCORE":
+      return state.map((game) =>
+        game.homeTeam === action.homeTeam && game.awayTeam === action.awayTeam
+          ? { ...game, homeScore: action.homeScore, awayScore: action.awayScore }
+          : game
+      );
 
     default:
       return state;
@@ -33,5 +50,22 @@ export function useScoreBoard() {
   const startGame = (home: string, away: string) =>
     dispatch({ type: "START_GAME", homeTeam: home, awayTeam: away });
 
-  return { games: state, startGame };
+  const finishGame = (home: string, away: string) =>
+    dispatch({ type: "FINISH_GAME", homeTeam: home, awayTeam: away });
+
+  const updateScore = (
+    home: string,
+    away: string,
+    homeScore: number,
+    awayScore: number
+  ) =>
+    dispatch({
+      type: "UPDATE_SCORE",
+      homeTeam: home,
+      awayTeam: away,
+      homeScore,
+      awayScore,
+    });
+
+  return { games: state, startGame, finishGame, updateScore };
 }

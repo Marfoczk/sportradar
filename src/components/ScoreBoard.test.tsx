@@ -12,6 +12,7 @@ describe("ScoreBoard Component", () => {
     fireEvent.change(awayInput, { target: { value: away } });
     fireEvent.click(startBtn);
   };
+
   it("should render the scoreboard and default input states", () => {
     render(<ScoreBoard />);
 
@@ -65,6 +66,15 @@ describe("ScoreBoard Component", () => {
     // Verify the values displayed in the score inputs
     expect(homeScoreInput).toHaveValue(0);
     expect(awayScoreInput).toHaveValue(0);
+
+    // Update score
+    fireEvent.change(homeScoreInput, { target: { value: "1" } });
+    fireEvent.change(awayScoreInput, { target: { value: "2" } });
+    fireEvent.click(updateButton);
+
+    // Verify new score
+    expect(homeScoreInput).toHaveValue(1);
+    expect(awayScoreInput).toHaveValue(2);
   });
 
   it('should clear home and away score inputs and hide update section when "Select a match to update" is chosen', async () => {
@@ -82,10 +92,6 @@ describe("ScoreBoard Component", () => {
       expect(selectElement).toHaveValue("POL vs ENG");
     });
 
-    // await waitFor(() => {
-    //   expect(screen.getByDisplayValue("1")).toBeInTheDocument();
-    // });
-
     fireEvent.change(selectElement, { target: { value: "" } });
 
     await waitFor(() => {
@@ -93,10 +99,20 @@ describe("ScoreBoard Component", () => {
     });
 
     // then
-    expect(screen.queryByDisplayValue("1")).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue("0")).not.toBeInTheDocument();
     expect(screen.queryByDisplayValue("0")).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: /Update/i })
     ).not.toBeInTheDocument();
+  });
+
+  it("should display games summary", () => {
+    render(<ScoreBoard />);
+
+    startGame("POL", "ENG");
+    startGame("USA", "MEX");
+
+    expect(screen.getByText('POL 0 - ENG 0')).toBeInTheDocument()
+    expect(screen.getByText('USA 0 - MEX 0')).toBeInTheDocument()
   });
 });
