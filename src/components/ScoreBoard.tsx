@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useScoreBoard } from "../hooks/useScoreBoard";
 
 export const ScoreBoard = () => {
-  const { games, startGame, updateScore, finishGame } = useScoreBoard();
+  const { games, summary, startGame, updateScore, finishGame } =
+    useScoreBoard();
   const [home, setHome] = useState("");
   const [away, setAway] = useState("");
   const [homeScore, setHomeScore] = useState(0);
@@ -35,8 +36,8 @@ export const ScoreBoard = () => {
     }
   };
 
-  const handleUpdateScore = () => updateScore(home, away, homeScore, awayScore)
-  const handleOnFinish = () => finishGame(home, away)
+  const handleUpdateScore = () => updateScore(home, away, homeScore, awayScore);
+  const handleOnFinish = () => finishGame(home, away);
 
   return (
     <div>
@@ -96,9 +97,9 @@ export const ScoreBoard = () => {
       <div>
         <h2>📊 Live Summary</h2>
         <ul>
-          {games.map((g, idx) => (
-            <li key={`${g.homeTeam}-${g.awayTeam}-${idx}`}>
-              {g.homeTeam} {g.homeScore} - {g.awayTeam} {g.awayScore}
+          {summary.map(({ homeTeam, homeScore, awayTeam, awayScore }, idx) => (
+            <li key={`${homeTeam}-${awayTeam}-${idx}`}>
+              {homeTeam} {homeScore} - {awayTeam} {awayScore}
             </li>
           ))}
         </ul>

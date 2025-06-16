@@ -2,10 +2,15 @@ import { useReducer } from "react";
 import type { ScoreBoardState } from "../types/types";
 
 type Action =
-  | { type: 'START_GAME'; homeTeam: string; awayTeam: string }
-  | { type: 'FINISH_GAME'; homeTeam: string; awayTeam: string }
-  | { type: 'UPDATE_SCORE'; homeTeam: string; awayTeam: string; homeScore: number; awayScore: number };
-
+  | { type: "START_GAME"; homeTeam: string; awayTeam: string }
+  | { type: "FINISH_GAME"; homeTeam: string; awayTeam: string }
+  | {
+      type: "UPDATE_SCORE";
+      homeTeam: string;
+      awayTeam: string;
+      homeScore: number;
+      awayScore: number;
+    };
 
 function reducer(state: ScoreBoardState, action: Action): ScoreBoardState {
   switch (action.type) {
@@ -29,13 +34,20 @@ function reducer(state: ScoreBoardState, action: Action): ScoreBoardState {
     case "FINISH_GAME":
       return state.filter(
         (game) =>
-          !(game.homeTeam === action.homeTeam && game.awayTeam === action.awayTeam)
+          !(
+            game.homeTeam === action.homeTeam &&
+            game.awayTeam === action.awayTeam
+          )
       );
 
     case "UPDATE_SCORE":
       return state.map((game) =>
         game.homeTeam === action.homeTeam && game.awayTeam === action.awayTeam
-          ? { ...game, homeScore: action.homeScore, awayScore: action.awayScore }
+          ? {
+              ...game,
+              homeScore: action.homeScore,
+              awayScore: action.awayScore,
+            }
           : game
       );
 
@@ -67,5 +79,12 @@ export function useScoreBoard() {
       awayScore,
     });
 
-  return { games: state, startGame, finishGame, updateScore };
+  const summary = [...state].sort((a, b) => {
+    const totalA = a.homeScore + a.awayScore;
+    const totalB = b.homeScore + b.awayScore;
+    if (totalA !== totalB) return totalB - totalA;
+    return b.addedAt - a.addedAt;
+  });
+
+  return { games: state, summary, startGame, finishGame, updateScore };
 }
