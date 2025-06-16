@@ -1,10 +1,11 @@
 import './App.css'
+import { ScoreBoard } from './components/ScoreBoard'
 
 function App() {
 
   return (
     <>
-    hello world
+      <ScoreBoard />
     </>
   )
 }
