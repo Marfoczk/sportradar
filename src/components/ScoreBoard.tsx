@@ -1,29 +1,23 @@
 import { useState } from "react";
-
-// dummy data
-const games = [
-  {
-    homeTeam: "POL",
-    awayTeam: "ENG",
-    homeScore: 1,
-    awayScore: 0,
-    addedAt: 1750029204530,
-  },
-  {
-    homeTeam: "USA",
-    awayTeam: "MEX",
-    homeScore: 5,
-    awayScore: 4,
-    addedAt: 1750029209551,
-  },
-];
+import { useScoreBoard } from "../hooks/useScoreBoard";
 
 export const ScoreBoard = () => {
+  const { games, startGame } = useScoreBoard();
   const [home, setHome] = useState("");
   const [away, setAway] = useState("");
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
   const [selectedMatchKey, setSelectedMatchKey] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleOnStart = () => {
+    try {
+      startGame(home, away);
+      setError(null);
+    } catch (e) {
+      if (e instanceof Error) setError(e.message);
+    }
+  };
 
   const handleSelectGame = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const key = e.target.value;
@@ -44,6 +38,11 @@ export const ScoreBoard = () => {
   return (
     <div>
       <h1>⚽ Football ScoreBoard</h1>
+      {error && (
+        <div role="alert" className="text-red-600">
+          {error}
+        </div>
+      )}
       <div>
         <input
           placeholder="Home Team"
@@ -56,7 +55,7 @@ export const ScoreBoard = () => {
           onChange={(e) => setAway(e.target.value)}
         />
         <div>
-          <button>Start Game</button>
+          <button onClick={handleOnStart}>Start Game</button>
           <button>Finish Game</button>
         </div>
       </div>
@@ -76,11 +75,13 @@ export const ScoreBoard = () => {
         {selectedMatchKey && (
           <div>
             <input
+              data-testid="homeScoreUpdateInput"
               type="number"
               value={homeScore}
               onChange={(e) => setHomeScore(+e.target.value)}
             />
             <input
+              data-testid="awayScoreUpdateInput"
               type="number"
               value={awayScore}
               onChange={(e) => setAwayScore(+e.target.value)}

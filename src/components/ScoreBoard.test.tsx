@@ -3,6 +3,15 @@ import { describe, it, expect } from "vitest";
 import { ScoreBoard } from "./ScoreBoard";
 
 describe("ScoreBoard Component", () => {
+  const startGame = (home: string, away: string) => {
+    const homeInput = screen.getByPlaceholderText("Home Team");
+    const awayInput = screen.getByPlaceholderText("Away Team");
+    const startBtn = screen.getByRole("button", { name: "Start Game" });
+
+    fireEvent.change(homeInput, { target: { value: home } });
+    fireEvent.change(awayInput, { target: { value: away } });
+    fireEvent.click(startBtn);
+  };
   it("should render the scoreboard and default input states", () => {
     render(<ScoreBoard />);
 
@@ -34,6 +43,8 @@ describe("ScoreBoard Component", () => {
   it("should update home and away score inputs when a game is selected", async () => {
     render(<ScoreBoard />);
 
+    startGame('USA', 'MEX');
+
     const selectElement = screen.getByRole("combobox");
 
     fireEvent.change(selectElement, { target: { value: "USA vs MEX" } });
@@ -43,8 +54,8 @@ describe("ScoreBoard Component", () => {
     });
 
     // Check if the score input fields are now visible
-    const homeScoreInput = screen.getByDisplayValue("5");
-    const awayScoreInput = screen.getByDisplayValue("4");
+    const homeScoreInput = screen.getByTestId('homeScoreUpdateInput');
+    const awayScoreInput = screen.getByTestId('awayScoreUpdateInput');
     const updateButton = screen.getByRole("button", { name: /Update/i });
 
     expect(homeScoreInput).toBeInTheDocument();
@@ -52,13 +63,15 @@ describe("ScoreBoard Component", () => {
     expect(updateButton).toBeInTheDocument();
 
     // Verify the values displayed in the score inputs
-    expect(homeScoreInput).toHaveValue(5);
-    expect(awayScoreInput).toHaveValue(4);
+    expect(homeScoreInput).toHaveValue(0);
+    expect(awayScoreInput).toHaveValue(0);
   });
 
   it('should clear home and away score inputs and hide update section when "Select a match to update" is chosen', async () => {
     // given
     render(<ScoreBoard />);
+
+    startGame('POL', 'ENG');
 
     const selectElement = screen.getByRole("combobox");
 
@@ -66,14 +79,17 @@ describe("ScoreBoard Component", () => {
     fireEvent.change(selectElement, { target: { value: "POL vs ENG" } });
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue("1")).toBeInTheDocument();
+      expect(selectElement).toHaveValue("POL vs ENG");
     });
+
+    // await waitFor(() => {
+    //   expect(screen.getByDisplayValue("1")).toBeInTheDocument();
+    // });
 
     fireEvent.change(selectElement, { target: { value: "" } });
 
     await waitFor(() => {
       expect(selectElement).toHaveValue("");
-
     });
 
     // then
