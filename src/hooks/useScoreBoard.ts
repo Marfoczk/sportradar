@@ -55,11 +55,15 @@ export function useScoreBoard() {
   const [state, dispatch] = useReducer(reducer, []);
 
   const startGame = (home: string, away: string) => {
+    if (!home.trim() || !away.trim()) {
+      throw new Error("Team names cannot be empty");
+    }
+
     const exists = state.some(
       (game) => game.homeTeam === home && game.awayTeam === away
     );
     if (exists) throw new Error("Game already exists");
-    
+
     dispatch({ type: "START_GAME", homeTeam: home, awayTeam: away });
   };
 

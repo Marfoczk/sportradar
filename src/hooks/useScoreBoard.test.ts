@@ -33,6 +33,16 @@ describe("useScoreBoard", () => {
     }).toThrowError("Game already exists");
   });
 
+  it("should throw an error when trying to start a game with empty away and home names", () => {
+    const { result } = renderHook(() => useScoreBoard());
+
+    expect(() => {
+      act(() => {
+        result.current.startGame("", "");
+      });
+    }).toThrowError("Team names cannot be empty");
+  });
+
   it("should update the score of an existing match", () => {
     const { result } = renderHook(() => useScoreBoard());
 
