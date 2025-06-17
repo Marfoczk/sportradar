@@ -4,9 +4,7 @@ import { ScoreBoard } from './components/ScoreBoard/ScoreBoard'
 function App() {
 
   return (
-    <>
       <ScoreBoard />
-    </>
   )
 }
 

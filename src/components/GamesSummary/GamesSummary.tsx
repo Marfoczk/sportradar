@@ -1,4 +1,5 @@
 import type { Match } from "../../types/types";
+import styles from "./GamesSummary.module.css";
 
 type GamesSummaryType = {
   summary: Match[];
@@ -12,10 +13,15 @@ export const GamesSummary: React.FC<GamesSummaryType> = ({
   return (
     <>
       <h2>📊 Live Summary</h2>
-      <ul>
+      <ul className={styles.myList}>
         {summary.map(({ homeTeam, homeScore, awayTeam, awayScore }, idx) => (
-          <li key={`${homeTeam}-${awayTeam}-${idx}`}>
-            {homeTeam} {homeScore} - {awayTeam} {awayScore}
+          <li
+            className={styles.gameListItem}
+            key={`${homeTeam}-${awayTeam}-${idx}`}
+          >
+            <span>
+              {homeTeam} {homeScore} - {awayTeam} {awayScore}
+            </span>
             <button
               aria-label={`finish ${homeTeam} vs ${awayTeam}`}
               onClick={() => onFinish(homeTeam, awayTeam)}

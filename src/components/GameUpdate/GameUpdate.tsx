@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { Match } from "../../types/types";
+import { Button } from "../Button/Button";
+import styles from "./GameUpdate.module.css";
 
 type GameUpdateType = {
   games: Match[];
@@ -38,10 +40,17 @@ export const GameUpdate: React.FC<GameUpdateType> = ({ games, onUpdate }) => {
   return (
     <>
       <h2>📝 Update Score</h2>
-      <select value={selectedMatch} onChange={handleSelectGame}>
-        <option value="">Select a match to update</option>
+      <select
+        className={styles.select}
+        value={selectedMatch}
+        onChange={handleSelectGame}
+      >
+        <option value="">
+          Select a match to update
+        </option>
         {games.map(({ homeTeam, awayTeam }) => (
           <option
+            className={styles.gameOption}
             key={`${homeTeam}-${awayTeam}`}
             value={`${homeTeam} vs ${awayTeam}`}
           >
@@ -50,21 +59,37 @@ export const GameUpdate: React.FC<GameUpdateType> = ({ games, onUpdate }) => {
         ))}
       </select>
       {selectedMatch && (
-        <div>
-          <input
-            data-testid="homeScoreUpdateInput"
-            type="number"
-            value={homeScore}
-            onChange={(e) => setHomeScore(+e.target.value)}
+        <>
+          <div className={styles.inputsRow}>
+            <div className={styles.inputSection}>
+              <label htmlFor="home_team">Home team</label>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                data-testid="homeScoreUpdateInput"
+                value={homeScore}
+                onChange={(e) => setHomeScore(+e.target.value)}
+              />
+            </div>
+            <div className={styles.inputSection}>
+              <label htmlFor="away_team">Away team</label>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                data-testid="awayScoreUpdateInput"
+                value={awayScore}
+                onChange={(e) => setAwayScore(+e.target.value)}
+              />
+            </div>
+          </div>
+          <Button
+            value="Update"
+            onClick={handleUpdateScore}
+            customStyles={{ marginTop: "12px" }}
           />
-          <input
-            data-testid="awayScoreUpdateInput"
-            type="number"
-            value={awayScore}
-            onChange={(e) => setAwayScore(+e.target.value)}
-          />
-          <button onClick={handleUpdateScore}>Update</button>
-        </div>
+        </>
       )}
     </>
   );

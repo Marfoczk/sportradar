@@ -4,8 +4,8 @@ import { ScoreBoard } from "./ScoreBoard";
 
 describe("ScoreBoard Component", () => {
   const startGame = (home: string, away: string) => {
-    const homeInput = screen.getByPlaceholderText("Home Team");
-    const awayInput = screen.getByPlaceholderText("Away Team");
+    const homeInput = screen.getByPlaceholderText("Enter home team...");
+    const awayInput = screen.getByPlaceholderText("Enter away team...");
     const startBtn = screen.getByRole("button", { name: "Start Game" });
 
     fireEvent.change(homeInput, { target: { value: home } });
@@ -21,8 +21,8 @@ describe("ScoreBoard Component", () => {
     expect(screen.getByText("📊 Live Summary")).toBeInTheDocument();
 
     // Check if input fields are present and empty by default
-    const homeTeamInput = screen.getByPlaceholderText("Home Team");
-    const awayTeamInput = screen.getByPlaceholderText("Away Team");
+    const homeTeamInput = screen.getByPlaceholderText("Enter home team...");
+    const awayTeamInput = screen.getByPlaceholderText("Enter away team...");
     expect(homeTeamInput).toHaveValue("");
     expect(awayTeamInput).toHaveValue("");
 
@@ -44,7 +44,7 @@ describe("ScoreBoard Component", () => {
   it("should update home and away score inputs when a game is selected", async () => {
     render(<ScoreBoard />);
 
-    startGame('USA', 'MEX');
+    startGame("USA", "MEX");
 
     const selectElement = screen.getByRole("combobox");
 
@@ -55,8 +55,8 @@ describe("ScoreBoard Component", () => {
     });
 
     // Check if the score input fields are now visible
-    const homeScoreInput = screen.getByTestId('homeScoreUpdateInput');
-    const awayScoreInput = screen.getByTestId('awayScoreUpdateInput');
+    const homeScoreInput = screen.getByTestId("homeScoreUpdateInput");
+    const awayScoreInput = screen.getByTestId("awayScoreUpdateInput");
     const updateButton = screen.getByRole("button", { name: /Update/i });
 
     expect(homeScoreInput).toBeInTheDocument();
@@ -81,7 +81,7 @@ describe("ScoreBoard Component", () => {
     // given
     render(<ScoreBoard />);
 
-    startGame('POL', 'ENG');
+    startGame("POL", "ENG");
 
     const selectElement = screen.getByRole("combobox");
 
@@ -112,7 +112,7 @@ describe("ScoreBoard Component", () => {
     startGame("POL", "ENG");
     startGame("USA", "MEX");
 
-    expect(screen.getByText('POL 0 - ENG 0')).toBeInTheDocument()
-    expect(screen.getByText('USA 0 - MEX 0')).toBeInTheDocument()
+    expect(screen.getByText("POL 0 - ENG 0")).toBeInTheDocument();
+    expect(screen.getByText("USA 0 - MEX 0")).toBeInTheDocument();
   });
 });

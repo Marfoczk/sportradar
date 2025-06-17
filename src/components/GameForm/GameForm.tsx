@@ -1,4 +1,6 @@
 import { useState } from "react";
+import styles from "./GameForm.module.css";
+import { Button } from "../Button/Button";
 
 type GameFormType = {
   onStart: (home: string, away: string) => void;
@@ -26,36 +28,38 @@ export const GameForm = ({ onStart }: GameFormType) => {
   return (
     <>
       {error && (
-        <div role="alert">
+        <div role="alert" className={styles.alert}>
           Error: {error}
-          <span onClick={() => setError("")} >
+          <span onClick={() => setError("")} className={styles.closeBtn}>
             X
           </span>
         </div>
       )}
       <h2>➕ Start New Game</h2>
-      <form onSubmit={(e) => handleOnStart(e)} >
-        <div>
-          <div >
+      <form onSubmit={(e) => handleOnStart(e)} className={styles.form}>
+        <div className={styles.inputsRow}>
+          <div className={styles.inputSection}>
             <label htmlFor="home_team">Home team</label>
             <input
-              placeholder="Enter your home team..."
+              placeholder="Enter home team..."
               id="home_team"
               value={home}
               onChange={(e) => setHome(e.target.value)}
+              required
             />
           </div>
-          <div >
+          <div className={styles.inputSection}>
             <label htmlFor="away_team">Away team</label>
             <input
               placeholder="Enter away team..."
               id="away_team"
               value={away}
               onChange={(e) => setAway(e.target.value)}
+              required
             />
           </div>
         </div>
-        <button type="submit">Start Game</button>
+        <Button value="Start Game"/>
       </form>
     </>
   );
