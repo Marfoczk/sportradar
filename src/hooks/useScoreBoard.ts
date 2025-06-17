@@ -15,11 +15,6 @@ type Action =
 function reducer(state: ScoreBoardState, action: Action): ScoreBoardState {
   switch (action.type) {
     case "START_GAME": {
-      const exists = state.some(
-        (game) =>
-          game.homeTeam === action.homeTeam && game.awayTeam === action.awayTeam
-      );
-      if (exists) throw new Error("Game already exists");
       return [
         ...state,
         {
@@ -59,8 +54,14 @@ function reducer(state: ScoreBoardState, action: Action): ScoreBoardState {
 export function useScoreBoard() {
   const [state, dispatch] = useReducer(reducer, []);
 
-  const startGame = (home: string, away: string) =>
+  const startGame = (home: string, away: string) => {
+    const exists = state.some(
+      (game) => game.homeTeam === home && game.awayTeam === away
+    );
+    if (exists) throw new Error("Game already exists");
+    
     dispatch({ type: "START_GAME", homeTeam: home, awayTeam: away });
+  };
 
   const finishGame = (home: string, away: string) =>
     dispatch({ type: "FINISH_GAME", homeTeam: home, awayTeam: away });
